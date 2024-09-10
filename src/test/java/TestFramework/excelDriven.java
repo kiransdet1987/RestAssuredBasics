@@ -1,0 +1,70 @@
+package TestFramework;
+import static io.restassured.RestAssured.given;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import org.testng.annotations.Test;
+
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import resources.dataDriven;
+public class excelDriven {
+
+	
+	@Test
+	public void addBook() throws IOException
+	{
+		dataDriven d=new dataDriven();
+		//Testcase,sheet
+		ArrayList data=d.getData("RestAddbook","RestAssured");
+		
+		
+		HashMap<String, Object>  map = new HashMap<>();
+		map.put("name", data.get(1));
+		map.put("isbn", data.get(2));
+		map.put("aisle", data.get(3));
+		map.put("author", data.get(4));
+		
+	/*	for nested json we can do as below.
+	 * HashMap<String, Object>  map2 = new HashMap<>();
+		map.put("lat", "12");
+		map.put("lng", "34");
+		map.put("location", map2);*/
+		
+		
+		RestAssured.baseURI="https://rahulshettyacademy.com";
+		Response resp=given().
+				header("Content-Type","application/json").
+		body(map).
+		when().
+		post("/Library/Addbook.php").
+		then().assertThat().statusCode(200).
+		extract().response();
+		 JsonPath js= ReusableMethods.rawToJson(resp);
+		   String id=js.get("ID");
+		   System.out.println(id);
+		
+		
+	
+		
+		
+		
+	// Create a place =response (place id)
+		
+		// delete Place = (Request - Place id)	
+		
+
+	}
+	
+	/*
+	 * public static String GenerateStringFromResource(String path) throws
+	 * IOException {
+	 * 
+	 * return new String(Files.readAllBytes(Paths.get(path)));
+	 * 
+	 * }
+	 */
+}
